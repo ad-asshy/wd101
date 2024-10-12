@@ -1,0 +1,62 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById('registrationForm');
+    const tableBody = document.querySelector('#entriesTable tbody');
+
+    // Load existing entries from localStorage
+    loadEntries();
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Get form values
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const dob = document.getElementById('dob').value;
+        const acceptedTerms = document.getElementById('terms').checked ? 'true' : 'false';
+
+        // Save the entry in localStorage
+        const entry = {
+            name,
+            email,
+            password,
+            dob,
+            acceptedTerms
+        };
+        saveEntry(entry);
+
+        // Add the entry to the table
+        addEntryToTable(entry);
+
+        // Clear the form
+        form.reset();
+    });
+
+    // Function to add entry to the table
+    function addEntryToTable(entry) {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${entry.name}</td>
+            <td>${entry.email}</td>
+            <td>${entry.password}</td>
+            <td>${entry.dob}</td>
+            <td>${entry.acceptedTerms}</td>
+        `;
+        tableBody.appendChild(newRow);
+    }
+
+    // Function to save entry in localStorage
+    function saveEntry(entry) {
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries.push(entry);
+        localStorage.setItem('entries', JSON.stringify(entries));
+    }
+
+    // Function to load entries from localStorage and display them in the table
+    function loadEntries() {
+        const entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries.forEach(entry => {
+            addEntryToTable(entry);
+        });
+    }
+});
